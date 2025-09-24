@@ -13,6 +13,7 @@ export const styles = StyleSheet.create({
         borderRadius: 6, 
         paddingRight: 10, 
         paddingLeft: 10,
+        justifyContent: "space-between",
     },
     description:{
         marginHorizontal: 10,
@@ -21,5 +22,14 @@ export const styles = StyleSheet.create({
         fontWeight: 600,
         color: "#F2F2F2", 
         textAlign: "justify"
+        fontSize: 14,
+        fontWeight: 600
+    },
+    touch: {
+        width: "90%",
+        display: "flex",
+        flexDirection: "row",
+        gap: 10
+                    
     }
 })

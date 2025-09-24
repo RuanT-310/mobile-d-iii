@@ -8,11 +8,12 @@ import { FilterStatus } from "@/types/FilterStatus"
 import { Item } from "@/components/Item"
 import { useEffect, useState } from "react"
 import { itemsStorage, ItemsStorage } from "@/storage/itemStorage"
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry"
 
-const FILTER_STATUS: FilterStatus[] = [FilterStatus.PENDING, FilterStatus.DONE]
+const FILTER_STATUS: FilterStatus[] = [FilterStatus.CREATED, FilterStatus.DONE]
 
 export function Home() {
-  const [filter, setFilter] = useState(FilterStatus.PENDING)
+  const [filter, setFilter] = useState(FilterStatus.CREATED)
   const [description, setDescription] = useState("")
   const [items, setItems] = useState<ItemsStorage[]>([])
 
@@ -24,15 +25,24 @@ export function Home() {
     const newItem = {
       id: Math.random().toString().substring(2),
       description,
-      status: FilterStatus.PENDING,
+      status: FilterStatus.CREATED,
     }
 
     await itemsStorage.add(newItem)
-    await itemsByStatus()
+    await getItems()
 
     Alert.alert("Adicionado", `Adicionado ${description}`)
-    setFilter(FilterStatus.PENDING)
+    setFilter(FilterStatus.CREATED)
     setDescription("")
+  }
+
+  function changeFilter(filter: FilterStatus) {
+    if (filter === FilterStatus.CREATED) {
+      setFilter(FilterStatus.CREATED)
+      return getItems()
+    }
+    itemsByStatus()
+    setFilter(filter)
   }
 
   async function itemsByStatus() {
@@ -45,21 +55,24 @@ export function Home() {
     }
   }
 
+  async function getItems() {
+    try {
+      const response = await itemsStorage.get()
+      setItems(response)
+    } catch (error) {
+      console.log(error)
+      Alert.alert("Erro", "Não foi possível filtrar os itens.")
+    }
+  }
+
   async function handleRemove(id: string) {
     try {
       await itemsStorage.remove(id)
-      await itemsByStatus()
+      await getItems()
     } catch (error) {
       console.log(error)
       Alert.alert("Remover", "Não foi possível remover o item.")
     }
-  }
-
-  function handleClear() {
-    Alert.alert("Limpar", "Deseja remover todos?", [
-      { text: "Não", style: "cancel" },
-      { text: "Sim", onPress: () => onClear()}
-    ])
   }
 
   async function onClear() {
@@ -75,7 +88,7 @@ export function Home() {
   async function handleToggleItemStatus(id: string) {
     try {
       await itemsStorage.toggleStatus(id)
-      await itemsByStatus()
+      await getItems()
     } catch (error) {
       console.log(error)
       Alert.alert("Erro", "Não foi possível atualizar o status.")
@@ -83,7 +96,11 @@ export function Home() {
   }
 
   useEffect(() => {
-    itemsByStatus()
+    if (filter === FilterStatus.CREATED) {
+      getItems()
+    } else {
+      itemsByStatus()
+    }
   }, [filter])
 
   return (
@@ -93,11 +110,11 @@ export function Home() {
       <View style={styles.form}
       >
         <Input 
-          placeholder="O que você precisa comprar?" 
+          placeholder="Adicione uma nova tarefa" 
           onChangeText={setDescription}
           value={description}
         />
-        <Button title="Adicionar" onPress={handleAdd} />
+        <Button title="" onPress={handleAdd} />
       </View>
 
       <View style={styles.content}>
@@ -107,13 +124,9 @@ export function Home() {
                key={status}
                status={status} 
                isActive={filter === status}
-               onPress={() => setFilter(status)} 
+               onPress={() => changeFilter(status)} 
             />
           ))}
-
-          <TouchableOpacity style={styles.clearButton} onPress={handleClear}>
-            <Text style={styles.clearText}>Limpar</Text>
-          </TouchableOpacity>
         </View>
 
         <FlatList 
@@ -129,7 +142,11 @@ export function Home() {
           showsVerticalScrollIndicator={false}
           ItemSeparatorComponent={() => <View style={styles.separator} />}
           contentContainerStyle={styles.listContent}
-          ListEmptyComponent={() => <Text style={styles.empty}>Nenhum item aqui.</Text>}
+          ListEmptyComponent={() => 
+          <View style={styles.contentList}>
+          <Image source={require('@/assets/icone fundo.png')} style={styles.icon}></Image>
+          <Text style={styles.empty}>Você ainda não tem tarefas cadastradas Crie tarefas e organize seus itens a fazer</Text>
+          </View>}
         />
       </View>
     </View>
