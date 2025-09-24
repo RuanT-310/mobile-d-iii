@@ -18,10 +18,12 @@ type Props = {
 export function Item({data, onStatus, onRemove}:Props){
     return(
         <View style={styles.container}>
-            
+
             <TouchableOpacity activeOpacity={0.8} onPress={onStatus} style={styles.touch}>
                 <StatusIcon status={data.status} />
-                <Text style={styles.description}>
+                <Text style={[
+                    styles.description, 
+                    data.status === FilterStatus.DONE ? styles.riskText : undefined]}>
                     {data.description}
                 </Text>
             </TouchableOpacity>
