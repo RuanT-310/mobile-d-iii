@@ -57,9 +57,7 @@ export const styles = StyleSheet.create({
   },
   separator: {
     width: "100%",
-    height: 1,
-    backgroundColor: "#EEF0F5",
-    marginVertical: 16,
+    marginVertical: 5,
   },
   listContent: {
     paddingTop: 24,

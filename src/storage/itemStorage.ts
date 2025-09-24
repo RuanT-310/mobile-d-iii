@@ -61,9 +61,9 @@ async function toggleStatus(id: string): Promise<void> {
     item.id === id
     ? {
       ...item,
-      status: item.status === FilterStatus.PENDING
+      status: item.status === FilterStatus.CREATED
         ? FilterStatus.DONE
-       : FilterStatus.PENDING,
+       : FilterStatus.CREATED,
     }
     : item
   )
