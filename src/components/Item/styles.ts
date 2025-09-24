@@ -21,7 +21,7 @@ export const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 600,
         color: "#F2F2F2", 
-        textAlign: "justify"
+        textAlign: "justify",
         fontSize: 14,
         fontWeight: 600
     },
