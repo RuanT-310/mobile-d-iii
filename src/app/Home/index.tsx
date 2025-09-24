@@ -122,7 +122,12 @@ export function Home() {
           {FILTER_STATUS.map((status) => (
             <Filter
                key={status}
-               status={status} 
+               status={status}
+               count={
+                status === FilterStatus.CREATED
+                ? items.length
+                : items.filter(item => item.status === FilterStatus.DONE).length
+               }
                isActive={filter === status}
                onPress={() => changeFilter(status)} 
             />
