@@ -55,13 +55,6 @@ export function Home() {
     }
   }
 
-  function handleClear() {
-    Alert.alert("Limpar", "Deseja remover todos?", [
-      { text: "Não", style: "cancel" },
-      { text: "Sim", onPress: () => onClear()}
-    ])
-  }
-
   async function onClear() {
     try {
       await itemsStorage.clear()
@@ -93,11 +86,11 @@ export function Home() {
       <View style={styles.form}
       >
         <Input 
-          placeholder="O que você precisa comprar?" 
+          placeholder="Adicione uma nova tarefa" 
           onChangeText={setDescription}
           value={description}
         />
-        <Button title="Adicionar" onPress={handleAdd} />
+        <Button title="" onPress={handleAdd} />
       </View>
 
       <View style={styles.content}>
@@ -110,10 +103,6 @@ export function Home() {
                onPress={() => setFilter(status)} 
             />
           ))}
-
-          <TouchableOpacity style={styles.clearButton} onPress={handleClear}>
-            <Text style={styles.clearText}>Limpar</Text>
-          </TouchableOpacity>
         </View>
 
         <FlatList 
@@ -129,7 +118,11 @@ export function Home() {
           showsVerticalScrollIndicator={false}
           ItemSeparatorComponent={() => <View style={styles.separator} />}
           contentContainerStyle={styles.listContent}
-          ListEmptyComponent={() => <Text style={styles.empty}>Nenhum item aqui.</Text>}
+          ListEmptyComponent={() => 
+          <View style={styles.contentList}>
+          <Image source={require('@/assets/icone fundo.png')} style={styles.icon}></Image>
+          <Text style={styles.empty}>Você ainda não tem tarefas cadastradas Crie tarefas e organize seus itens a fazer</Text>
+          </View>}
         />
       </View>
     </View>
